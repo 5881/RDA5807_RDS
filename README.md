@@ -5,12 +5,15 @@
 LibopenCM3. Отличается хорошей чувствительностью и очень приличным 
 качеством звучания плюс кварцевая стабилизация.
 
+
 # RDS-enabled RDA5807 radio
 Shows the name of the stations (block 0A/0B), date and time (block 4A) 
 and Radiotext (Block 2A). STM32F103C8T6 microcontroller and TFT 128x128 
 display on ST7735 was used. The code is written in C using the 
 LibopenCM3. It is characterized by good sensitivity and very decent 
 sound quality plus quartz stabilization.
+
+![Display](pics/IMG_20250820_174653.jpg)
 
 # Instructions
  
@@ -23,4 +26,6 @@ sound quality plus quartz stabilization.
  7. $make flash
 
 Александр Белый 2025
+
+
 @candidum5881
