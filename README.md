@@ -18,7 +18,7 @@ sound quality plus quartz stabilization.
  2. $git clone https://github.com/5881/RDA5807_RDS.git
  3. $cd RDA5807_RDS
  4. $git submodule update --init # (Only needed once)
- 5. $TARGETS=stm32/f0 make -C libopencm3 # (Only needed once)
+ 5. $TARGETS=stm32/f1 make -C libopencm3 # (Only needed once)
  6. $make 
  7. $make flash
 
