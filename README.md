@@ -15,8 +15,8 @@ sound quality plus quartz stabilization.
 # Instructions
  
  1. $sudo pacman -S openocd arm-none-eabi-binutils arm-none-eabi-gcc arm-none-eabi-newlib arm-none-eabi-gdb
- 2. $git clone https://github.com/5881/rda5807-rds.git
- 3. $cd rda5807-rds
+ 2. $git clone https://github.com/5881/RDA5807_RDS.git
+ 3. $cd RDA5807_RDS
  4. $git submodule update --init # (Only needed once)
  5. $TARGETS=stm32/f0 make -C libopencm3 # (Only needed once)
  6. $make 
