@@ -20,12 +20,11 @@ bin/rda5807.o: inc/rda5807.c \
  /usr/arm-none-eabi/include/sys/_locale.h \
  /usr/arm-none-eabi/include/strings.h \
  /usr/arm-none-eabi/include/sys/string.h \
- ../libopencm3/include/libopencm3/stm32/i2c.h \
- ../libopencm3/include/libopencm3/cm3/common.h \
+ libopencm3/include/libopencm3/stm32/i2c.h \
+ libopencm3/include/libopencm3/cm3/common.h \
  /usr/lib/gcc/arm-none-eabi/14.2.0/include/stdbool.h \
- ../libopencm3/include/libopencm3/stm32/memorymap.h \
- ../libopencm3/include/libopencm3/stm32/f1/memorymap.h \
- ../libopencm3/include/libopencm3/cm3/memorymap.h \
- ../libopencm3/include/libopencm3/stm32/f1/i2c.h \
- ../libopencm3/include/libopencm3/stm32/common/i2c_common_v1.h \
- inc/rda5807.h
+ libopencm3/include/libopencm3/stm32/memorymap.h \
+ libopencm3/include/libopencm3/stm32/f1/memorymap.h \
+ libopencm3/include/libopencm3/cm3/memorymap.h \
+ libopencm3/include/libopencm3/stm32/f1/i2c.h \
+ libopencm3/include/libopencm3/stm32/common/i2c_common_v1.h inc/rda5807.h

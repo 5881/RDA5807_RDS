@@ -76,7 +76,7 @@ static void spi1_init(void){
 	              GPIO_CNF_OUTPUT_PUSHPULL, GPIO3|GPIO4|GPIO8);
 	              
   /* Reset SPI, SPI_CR1 register cleared, SPI is disabled */
-	spi_reset(SPI1);
+	//spi_reset(SPI1);
   /* Set up SPI in Master mode with:
    * Clock baud rate: 1/64 of peripheral clock frequency
    * Clock polarity: Idle High
@@ -166,6 +166,7 @@ void test_indicate(){
 void indicate(){
 	char temp[50];
 	uint8_t i;
+	
 	static uint32_t freq_old=100000;
 	static uint8_t vol_old=1;
 	static uint8_t rssi_old=30;
@@ -179,6 +180,7 @@ void indicate(){
 	if(vol!=vol_old){
 	sprintf(temp,"vol: %2d",vol);
 	st7735_string_at(1,10,temp,GREEN,BLACK);
+
 	vol_old=vol;
 	}
 	
