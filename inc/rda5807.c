@@ -115,9 +115,9 @@ uint8_t RDA5807_rds_decode(uint8_t *str, uint32_t *unixtime, uint8_t *str64){
 	uint8_t status=0;
 	//Название станции 0A/0B
 	if(block_type==0){
-		i=(temp[1]&0b11);
-		str[i*2]=(temp[3]>>8);
-		str[i*2+1]=(temp[3]&0xff);
+		i=temp[1]&0b11;
+		str[i*2]=temp[3]>>8;
+		str[i*2+1]=temp[3]&0xff;
 		status|=1;//строку имени обновили
 		}
 	//Радиотекст 2A
@@ -128,11 +128,11 @@ uint8_t RDA5807_rds_decode(uint8_t *str, uint32_t *unixtime, uint8_t *str64){
 			old_flag_2a=flag_2a;
 			for(i=0;i<64;i++) str64[i]=0x20;
 			}
-		i=(uint8_t)(temp[1]&0xf);
-		str64[4*i]=(temp[2]&0xff00)>>8;
-		str64[4*i+1]=(temp[2]&0xff);
-		str64[4*i+2]=(temp[3]&0xff00)>>8;
-		str64[4*i+3]=(temp[3]&0xff);
+		i=temp[1]&0xf;
+		str64[4*i]=temp[2]>>8;
+		str64[4*i+1]=temp[2]&0xff;
+		str64[4*i+2]=temp[3]>>8;
+		str64[4*i+3]=temp[3]&0xff;
 		status|=1<<2; //строку радиотекста обновили
 	}
 	//Дата/время 4A
@@ -142,9 +142,9 @@ uint8_t RDA5807_rds_decode(uint8_t *str, uint32_t *unixtime, uint8_t *str64){
 		MJD=(MJD<<15)|(uint32_t)temp[2]>>1;
 		uint32_t UNIXTIME=(MJD-40587)*86400;
 		uint32_t hours, minutes, offset;
-		hours=(uint32_t)(temp[3]>>12|(temp[2]&1)<<4);
-		minutes=(uint32_t)((temp[3]>>6)&0b111111);
-		offset=(uint32_t) temp[3]&0b11111;
+		hours=temp[3]>>12|(temp[2]&1)<<4;
+		minutes=(temp[3]>>6)&0b111111;
+		offset=temp[3]&0b11111;
 		UNIXTIME=UNIXTIME+hours*3600+minutes*60;
 		if(temp[3]&1<<5) UNIXTIME-=offset*1800; else UNIXTIME+=offset*1800;
 		*unixtime=UNIXTIME;
