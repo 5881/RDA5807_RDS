@@ -15,6 +15,8 @@
 #define RDA5807_SEEK 1<<8
 #define RDA5807_RDS_EN 1<<3
 #define RDA5807_NEW_METHOD 1<<2
+//Регистр 3h биты 2,3 выбирается диапазон 76-108МГц
+#define RDA5807_WWBAND 0b10<<2 
 
 #define RDA5807I2C I2C1
 
@@ -22,9 +24,11 @@ void RDA5807_read_registers(void);
 uint16_t RDA5807_read_random_register(uint8_t);
 void RDA5807_write_random_register(uint8_t, uint16_t);
 void RDA5807_set_freq(uint32_t);
+void RDA5807_set_freq_fullband(uint32_t);
 void RDA5807_set_vol(uint8_t);
 uint8_t RDA5807_get_rssi(void);
 uint8_t RDA5807_get_abcd(uint16_t *);
+uint8_t RDA5807_get_abcd2(uint16_t *);
 uint8_t RDA5807_get_station_name(uint8_t *);
 uint8_t RDA5807_test_a_block(uint16_t);
 uint8_t RDA5807_get_paket_type(uint16_t *);

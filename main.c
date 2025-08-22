@@ -42,7 +42,7 @@ switch (cmd){
 		if(mode) {if(freq<108000)freq+=100;} else {if(vol<15)vol+=1;}
 		break;
 	case -1:
-		if(mode) {if(freq>87000)freq-=100;} else {if(vol>0)vol-=1;}
+		if(mode) {if(freq>76000)freq-=100;} else {if(vol>0)vol-=1;}
 		break;
 	case 0:
 		mode=!mode;
@@ -142,7 +142,7 @@ void exti_setup(){
 	//gpio_set(GPIOA,GPIO9);  
 	
 	gpio_set_mode(GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, GPIO9|GPIO10);
-	gpio_set(GPIOA,GPIO9|GPIO10); 
+	//gpio_set(GPIOA,GPIO9|GPIO10); 
 	// Configure the EXTI subsystem. 
 	exti_select_source(EXTI9, GPIOA);
 	exti_set_trigger(EXTI9, EXTI_TRIGGER_FALLING);
@@ -152,6 +152,7 @@ void exti_setup(){
 void exti9_5_isr(void)
 {
 	//прерывание энкодера
+	//for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
 	if(gpio_get(GPIOA,GPIO10)) change_setting(-1);
 		else change_setting(1);
 	for(uint32_t i=0; i<0x5ffff;i++) __asm__("nop");
@@ -257,7 +258,7 @@ void main(){
 	sprintf(temp,"@Candidum5881");
 	st7735_string_at(25,120,temp,RED,BLACK);
 	while (1){
-		//for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
+			for(uint32_t i=0; i<0x1fff;i++) __asm__("nop");
 			applay_setting();
 			indicate();
 			if(!gpio_get(GPIOA,GPIO11)){

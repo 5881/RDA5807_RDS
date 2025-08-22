@@ -24,9 +24,10 @@ void RDA5807_set_freq(uint32_t freq){
 	uint16_t temp=RDA5807_read_random_register(0x7);
 	temp|=1;
 	RDA5807_write_random_register(0x7, temp);
-	temp=(uint16_t)(freq-87000);
+	temp=(uint16_t)(freq-76000);
 	RDA5807_write_random_register(0x8, temp);
 }
+
 void RDA5807_set_vol(uint8_t vol){
 	if(vol>15)vol=15;
 	uint16_t temp=RDA5807_read_random_register(0x5);
@@ -91,15 +92,15 @@ uint8_t RDA5807_get_abcd(uint16_t *abcd){
 	
 uint8_t RDA5807_get_station_name(uint8_t *str){
 	uint16_t temp[4];
-	if(RDA5807_get_abcd(temp)) return 0;
+	if(RDA5807_get_abcd2(temp)) return 0;
 	uint8_t block_type, block_ver;
-	block_type=(uint8_t)(temp[1]>>12);
-	block_ver=(uint8_t)((temp[1]>>11)&1);
+	block_type=temp[1]>>12;
+	block_ver=(temp[1]>>11)&1;
 	uint8_t i;
 	if(block_type==0){
-		i=(uint8_t)(temp[1]&0b11);
-		str[i*2]=(uint8_t) (temp[3]>>8);
-		str[i*2+1]=(uint8_t) (temp[3]&0xff);
+		i=temp[1]&0b11;
+		str[i*2]=temp[3]>>8;
+		str[i*2+1]=temp[3]&0xff;
 		return 1;
 		}
 	return 2;
@@ -110,7 +111,7 @@ uint8_t RDA5807_rds_decode(uint8_t *str, uint32_t *unixtime, uint8_t *str64){
 	if(RDA5807_get_abcd2(temp)) return 0;
 	uint8_t block_type, block_ver;
 	block_type=temp[1]>>12;
-	block_ver=(temp[1]>>11)&1;
+	block_ver=(temp[1]>>11)&1;//block_ver=0 A, block_ver=1 B
 	uint8_t i;
 	uint8_t status=0;
 	//Название станции 0A/0B
@@ -122,6 +123,9 @@ uint8_t RDA5807_rds_decode(uint8_t *str, uint32_t *unixtime, uint8_t *str64){
 		}
 	//Радиотекст 2A
 	if(block_type==2 && block_ver==0){
+		//Согласно документации изменение этого бита сигнал к очистке
+		//строки, это можно не делать но тогда будут оставаться
+		//артефакты
 		static uint8_t old_flag_2a=0;
 		uint8_t flag_2a=(uint8_t)(temp[1]&1<<5);
 		if(flag_2a!=old_flag_2a){
@@ -162,7 +166,7 @@ uint8_t RDA5807_test_a_block(uint16_t ablock){
 
 uint8_t RDA5807_get_paket_type(uint16_t *str){
 	uint16_t temp[4];
-	if(RDA5807_get_abcd(temp)) return 0;
+	if(RDA5807_get_abcd2(temp)) return 0;
 	//RDA5807_get_abcd(temp);
 	str[0]=temp[0];
 	str[1]=(temp[1]&0xf000)>>8;
@@ -172,7 +176,11 @@ uint8_t RDA5807_get_paket_type(uint16_t *str){
 	
 void RDA5807_init(void){
 	uint16_t temp=RDA5807_ENABLE|RDA5807_BASS|RDA5807_DHIZ|RDA5807_DMUTE|RDA5807_RDS_EN|RDA5807_NEW_METHOD;
-	RDA5807_write_random_register(2, temp);
+	RDA5807_write_random_register(0x2, temp);
+	temp=RDA5807_read_random_register(0x3);
+	//Регистр 3h биты 2,3 выбирается диапазон 76-108МГц
+	temp|=RDA5807_WWBAND;
+	RDA5807_write_random_register(0x3, temp);
 	RDA5807_set_freq(89100);
 }
 
