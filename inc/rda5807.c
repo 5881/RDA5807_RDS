@@ -39,6 +39,40 @@ uint8_t RDA5807_get_rssi(void){
 	return (uint8_t)temp;
 }
 
+uint8_t RDA5807_get_abcd2(uint16_t *abcd){
+	//такое решение мне кажется более элегантным
+	//во всяком случае так по шине SPI гоняется в 2 рвза меньше данных
+	//у проца частота 72МГц, а у шины 400Кгц, так что это в любом случае
+	//быстрее.
+	uint8_t data[14];
+	uint8_t temp;
+	uint16_t *registers;
+	i2c_transfer7(RDA5807I2C,RDA5807ADDR,0,0,data,14);
+	//а теперь немножко низкоуровневой магии
+	for(uint8_t i=0;i<14;i+=2){
+		temp=data[i];
+		data[i]=data[i+1];
+		data[i+1]=temp;
+	}
+	registers=(uint16_t *)data;
+	//registers[0] Ah
+	//registers[1] Bh
+	//registers[2] Ch
+	//registers[3] Dh
+	//registers[4] Eh
+	//registers[5] Fh
+	//registers[6] 10h
+	if(registers[0]&1<<15 && !(registers[1]&0x000f) && !(registers[6]&0xf000)){
+		abcd[0]=registers[2];
+		abcd[1]=registers[3];
+		abcd[2]=registers[4];
+		abcd[3]=registers[5];
+		if(RDA5807_test_a_block(abcd[0])) return 2;
+		return 0;
+		}
+	return 1;
+}
+
 uint8_t RDA5807_get_abcd(uint16_t *abcd){
 	uint16_t ah, bh, h10;
 	ah=RDA5807_read_random_register(0xa);
@@ -73,17 +107,17 @@ uint8_t RDA5807_get_station_name(uint8_t *str){
 
 uint8_t RDA5807_rds_decode(uint8_t *str, uint32_t *unixtime, uint8_t *str64){
 	uint16_t temp[4];
-	if(RDA5807_get_abcd(temp)) return 0;
+	if(RDA5807_get_abcd2(temp)) return 0;
 	uint8_t block_type, block_ver;
-	block_type=(uint8_t)(temp[1]>>12);
-	block_ver=(uint8_t)((temp[1]>>11)&1);
+	block_type=temp[1]>>12;
+	block_ver=(temp[1]>>11)&1;
 	uint8_t i;
 	uint8_t status=0;
 	//Название станции 0A/0B
 	if(block_type==0){
-		i=(uint8_t)(temp[1]&0b11);
-		str[i*2]=(uint8_t) (temp[3]>>8);
-		str[i*2+1]=(uint8_t) (temp[3]&0xff);
+		i=(temp[1]&0b11);
+		str[i*2]=(temp[3]>>8);
+		str[i*2+1]=(temp[3]&0xff);
 		status|=1;//строку имени обновили
 		}
 	//Радиотекст 2A
