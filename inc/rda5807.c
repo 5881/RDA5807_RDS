@@ -21,10 +21,10 @@ void RDA5807_write_random_register(uint8_t registr, uint16_t data){
 
 void RDA5807_set_freq(uint32_t freq){
 	//включаем direct freq
-	uint16_t temp=RDA5807_read_random_register(0x7);
-	temp|=1;
-	RDA5807_write_random_register(0x7, temp);
-	temp=(uint16_t)(freq-76000);
+	//uint16_t temp=RDA5807_read_random_register(0x7);
+	//temp|=1;
+	//RDA5807_write_random_register(0x7, temp);
+	uint16_t temp=(uint16_t)(freq-76000);
 	RDA5807_write_random_register(0x8, temp);
 }
 
@@ -181,6 +181,10 @@ void RDA5807_init(void){
 	//Регистр 3h биты 2,3 выбирается диапазон 76-108МГц
 	temp|=RDA5807_WWBAND;
 	RDA5807_write_random_register(0x3, temp);
+	//включаем direct freq
+	temp=RDA5807_read_random_register(0x7);
+	temp|=1;
+	RDA5807_write_random_register(0x7, temp);
 	RDA5807_set_freq(89100);
 }
 

@@ -4,7 +4,7 @@ BUILD_DIR = bin
 SHARED_DIR = ./inc
 CFILES = main.c
 CFILES += st7735_128x128.c 
-CFILES += st_printf.c 
+#CFILES += st_printf.c 
 CFILES += rda5807.c 
 #AFILES += api-asm.S
 

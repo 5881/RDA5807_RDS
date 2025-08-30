@@ -2,6 +2,8 @@
  * Приёмник RDA5807
  * v0.1 15 aug 2025
  * v0.9 20 aug 2025
+ * v1.0 30 aug 2025
+ * выкинул st_printf и заменил на stdio
  * Alexandr Belyy
  * /
 
@@ -18,7 +20,8 @@
 #include "st7735_128x128.h"
 #include "rda5807.h"
 #include <libopencm3/stm32/i2c.h>
-#include "st_printf.h"
+//#include "st_printf.h"
+#include <stdio.h>
 #include <string.h>
 //#include "logo.h"
 
@@ -159,10 +162,6 @@ void exti9_5_isr(void)
 	exti_reset_request(EXTI9);
 }
 
-void test_indicate(){
-	stprintf("\aall is OK!\n");
-	stprintf("vol = %2d\nfreq = %5d\nrssi = %3d\n", vol,freq,rssi);
-}
 
 void indicate(){
 	char temp[50];
@@ -196,7 +195,7 @@ void indicate(){
 	uint16_t a,b;
 	a=freq/1000;
 	b=freq%1000/10;
-	sprintf(temp,"%3d.%1d",a,b);
+	sprintf(temp,"%3d.%02d",a,b);
 	st7735_string_x3_at(2,23,temp,WHITE,BLACK);
 	freq_old=freq;
 	}
@@ -211,7 +210,7 @@ void indicate(){
 		uint16_t year;
 		uint8_t month,day,hours,minutes;
 		RDA5807_unixtime_to_datetime(unixtime,&year,&month,&day,&hours,&minutes);
-		sprintf(temp,"%2d.%2d.%4d %2d:%2d    ",day,month,year,hours,minutes);
+		sprintf(temp,"%02d.%02d.%04d %02d:%02d    ",day,month,year,hours,minutes);
 		st7735_string_at(15,60,temp,GREEN,BLACK);
 	}
 	//Радиотекст строка 64 символа.
@@ -252,9 +251,9 @@ void main(){
 	exti_setup();
 	st7735_clear(BLACK);
 	st7735_set_printf_color(GREEN,BLACK);
-	stprintf("Display is OK!\n");
+	//stprintf("Display is OK!\n");
 	RDA5807_init();
-	stprintf("\a");
+	//stprintf("\a");
 	sprintf(temp,"@Candidum5881");
 	st7735_string_at(25,120,temp,RED,BLACK);
 	while (1){
