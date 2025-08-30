@@ -13,7 +13,7 @@ display on ST7735 was used. The code is written in C using the
 LibopenCM3. It is characterized by good sensitivity and very decent 
 sound quality plus quartz stabilization.
 
-![Display](pics/IMG_20250820_174653.jpg)
+![Display](pics/int0.jpg)
 
 # Instructions
  
