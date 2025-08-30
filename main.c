@@ -123,7 +123,7 @@ static void i2c_init(void){
 	/* Disable the I2C before changing any configuration. */
 	i2c_peripheral_disable(I2C1);
 	//36 is APB1 speed in MHz
-	i2c_set_speed(I2C1,i2c_speed_fm_400k,36);
+	i2c_set_speed(I2C1,i2c_speed_fm_400k,24);
 	i2c_peripheral_enable(I2C1);
 	}
 
@@ -158,7 +158,7 @@ void exti9_5_isr(void)
 	//for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
 	if(gpio_get(GPIOA,GPIO10)) change_setting(-1);
 		else change_setting(1);
-	for(uint32_t i=0; i<0x5ffff;i++) __asm__("nop");
+	for(uint32_t i=0; i<0xffff;i++) __asm__("nop");
 	exti_reset_request(EXTI9);
 }
 
@@ -244,7 +244,8 @@ void indicate(){
 void main(){
 	char temp[50];
 	for(uint32_t i=0; i<0xffff;i++) __asm__("nop");
-	rcc_clock_setup_in_hse_8mhz_out_72mhz();
+	//rcc_clock_setup_in_hse_8mhz_out_72mhz();
+	rcc_clock_setup_in_hse_8mhz_out_24mhz();
 	spi1_init();
 	i2c_init();
 	st7735_init();
@@ -257,7 +258,7 @@ void main(){
 	sprintf(temp,"@Candidum5881");
 	st7735_string_at(25,120,temp,RED,BLACK);
 	while (1){
-			for(uint32_t i=0; i<0x1fff;i++) __asm__("nop");
+			for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
 			applay_setting();
 			indicate();
 			if(!gpio_get(GPIOA,GPIO11)){
