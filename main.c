@@ -26,7 +26,7 @@
 //#include "logo.h"
 
 uint32_t freq=89100;
-uint8_t vol=7;
+uint8_t vol=2;
 uint8_t rssi;
 uint8_t mode=1;
 
@@ -131,8 +131,8 @@ static void i2c_init(void){
 void button_init(){
 	rcc_periph_clock_enable(RCC_GPIOA);
 	gpio_set_mode(GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN,
-													GPIO11);
-	gpio_set(GPIOA,GPIO11);  
+													GPIO12);
+	gpio_set(GPIOA,GPIO12);  
 }
 void exti_setup(){
 	rcc_periph_clock_enable(RCC_GPIOA);
@@ -158,7 +158,8 @@ void exti9_5_isr(void)
 	//for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
 	if(gpio_get(GPIOA,GPIO10)) change_setting(-1);
 		else change_setting(1);
-	for(uint32_t i=0; i<0xffff;i++) __asm__("nop");
+	gpio_toggle(GPIOB,GPIO12);
+	for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
 	exti_reset_request(EXTI9);
 }
 
@@ -240,12 +241,20 @@ void indicate(){
 	//st7735_string_at(25,120,temp,RED,BLACK);
 	
 }
-	
+
+void led_init(void){
+	rcc_periph_clock_enable(RCC_GPIOB);
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ,
+	              GPIO_CNF_OUTPUT_PUSHPULL, GPIO12);
+	gpio_clear(GPIOB,GPIO12);
+}
+
 void main(){
 	char temp[50];
 	for(uint32_t i=0; i<0xffff;i++) __asm__("nop");
 	//rcc_clock_setup_in_hse_8mhz_out_72mhz();
 	rcc_clock_setup_in_hse_8mhz_out_24mhz();
+	led_init();
 	spi1_init();
 	i2c_init();
 	st7735_init();
@@ -258,11 +267,13 @@ void main(){
 	sprintf(temp,"@Candidum5881");
 	st7735_string_at(25,120,temp,RED,BLACK);
 	while (1){
-			for(uint32_t i=0; i<0xfff;i++) __asm__("nop");
+			for(uint32_t i=0; i<0xffff;i++) __asm__("nop");
+			gpio_toggle(GPIOB,GPIO12);
 			applay_setting();
 			indicate();
-			if(!gpio_get(GPIOA,GPIO11)){
-				while(!gpio_get(GPIOA,GPIO11))__asm__("nop");
+			if(!gpio_get(GPIOA,GPIO12)){
+				while(!gpio_get(GPIOA,GPIO12))__asm__("nop");
+			//	gpio_toggle(GPIOB,GPIO12);
 				change_setting(0);
 				}
 			}

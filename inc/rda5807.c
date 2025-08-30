@@ -185,7 +185,7 @@ void RDA5807_init(void){
 	temp=RDA5807_read_random_register(0x7);
 	temp|=1;
 	RDA5807_write_random_register(0x7, temp);
-	RDA5807_set_freq(89100);
+	//RDA5807_set_freq(89100);
 }
 
 void  RDA5807_unixtime_to_datetime ( uint32_t unixtime,
